@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "shopList",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
