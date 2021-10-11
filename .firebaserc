@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "lista-mercado-ionic"
+  },
+  "targets": {
+    "lista-mercado-ionic": {
+      "hosting": {
+        "app": [
+          "lista-mercado-ionic"
+        ]
+      }
+    }
+  }
+}
