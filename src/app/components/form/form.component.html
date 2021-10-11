@@ -1,0 +1,28 @@
+<form [formGroup]="addForm" (ngSubmit)="addProduct()">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Agregar un producto</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>Producto</ion-label>
+          <ion-input formControlName="name" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Precio</ion-label>
+          <ion-input formControlName="price" type="number"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Cantidad</ion-label>
+          <ion-input formControlName="quantity" type="number"></ion-input>
+        </ion-item>
+      </ion-list>
+      <div class="center">
+        <ion-button [disabled]="addForm.invalid" type="submit" expand="block">
+          <ion-label>Agregar</ion-label>
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</form>

@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Item } from '../interfaces/item.interface';
 import { ShopService } from '../services/shop.service';
 
@@ -8,35 +10,32 @@ import { ShopService } from '../services/shop.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   public items$: Observable<Item[]>;
-  constructor(private shopService: ShopService) {}
+  public total = 0;
+  private unsubscribe$: Subject<void> = new Subject<void>();
+
+  constructor(private shopService: ShopService, private router: Router) {}
 
   ngOnInit(): void {
     this.items$ = this.shopService.getItems();
-    this.shopService.getItems().subscribe(console.log);
+
+    this.shopService
+      .getItems()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(console.log);
+  }
+
+  public reload(event) {
+    event.target.complete();
   }
 
   public delete(id): void {
-    // this.shopService.deleteItem(id).subscribe();
-    this.add({
-      id: new Date().getTime().toString(),
-      name: 'Hola',
-      price: 100,
-      quantity: 1,
-      checked: false,
-    });
+    this.shopService.deleteItem(id).subscribe();
   }
 
-  public add(item): void {
-    item = {
-      id: new Date().getTime().toString(),
-      name: 'Hola',
-      price: 100,
-      quantity: 1,
-      checked: false,
-    };
-
-    this.shopService.addItem(item);
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

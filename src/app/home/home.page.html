@@ -5,13 +5,15 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="reload($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <app-form></app-form>
+
   <ion-list *ngIf="items$ | async as items">
     <ion-item-sliding *ngFor="let item of items; let i = index">
-      <ion-item lines="none">
-        <ion-checkbox slot="start" [(ngModel)]="item.checked"></ion-checkbox>
-        <ion-label>{{item.name}}</ion-label>
-      </ion-item>
-
+      <app-item [item]="item"></app-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="delete(item.id)">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
@@ -23,6 +25,6 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-title>Total: </ion-title>
+    <ion-title>Total: {{total}}</ion-title>
   </ion-toolbar>
 </ion-footer>
