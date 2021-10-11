@@ -1,0 +1,16 @@
+.item {
+  align-items: center;
+  display: flex;
+  height: max-content;
+  justify-content: space-between;
+
+  &-data {
+    font-size: 1.2rem;
+    margin: 0;
+    padding: 0 0.5rem;
+  }
+
+  .price {
+    min-width: 5.3125rem;
+  }
+}

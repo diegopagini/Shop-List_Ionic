@@ -4,14 +4,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="reload($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <app-form></app-form>
+  <app-form (itemsEmitter)="receiveModifiedItems($event)"></app-form>
 
-  <ion-list *ngIf="items$ | async as items">
+  <ion-list #list *ngIf="items$ | async as items">
     <ion-item-sliding *ngFor="let item of items; let i = index">
       <app-item [item]="item"></app-item>
       <ion-item-options side="end">
@@ -25,6 +25,6 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-title>Total: {{total}}</ion-title>
+    <ion-title>Total: {{total | currency: 'EUR'}}</ion-title>
   </ion-toolbar>
 </ion-footer>
