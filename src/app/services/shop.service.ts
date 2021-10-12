@@ -34,20 +34,57 @@ export class ShopService {
       this.http
         .post(`${url}/shop.json`, item)
         .pipe(take(1))
-        .subscribe((resp: any) => {
-          this.getItems();
-          resolve(true);
-        });
+        .subscribe(
+          (resp: any) => {
+            this.getItems();
+            resolve(true);
+          },
+          (err) => {
+            console.log(err);
+            resolve(false);
+          }
+        );
     });
   }
 
-  public deleteItem(id: string) {
-    this.http
-      .delete(`${url}/shop/${id}.json`)
-      .pipe(take(1))
-      .subscribe(() => {
-        this.getItems();
-      });
+  public updateItem(item: Item): Promise<boolean> {
+    const temporaryItem = {
+      ...item,
+    };
+
+    return new Promise((resolve, reject) => {
+      this.http
+        .put(`${url}/shop/${item.id}.json`, temporaryItem)
+        .pipe(take(1))
+        .subscribe(
+          () => {
+            this.getItems();
+            resolve(true);
+          },
+          (err) => {
+            console.log(err);
+            resolve(false);
+          }
+        );
+    });
+  }
+
+  public deleteItem(id: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .delete(`${url}/shop/${id}.json`)
+        .pipe(take(1))
+        .subscribe(
+          () => {
+            this.getItems();
+            resolve(true);
+          },
+          (err) => {
+            console.log(err);
+            resolve(false);
+          }
+        );
+    });
   }
 
   private createArray(shopObject): Item[] {

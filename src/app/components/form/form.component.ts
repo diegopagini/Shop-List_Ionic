@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShopService } from 'src/app/services/shop.service';
 
@@ -8,7 +8,6 @@ import { ShopService } from 'src/app/services/shop.service';
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
-  @Output() itemsEmitter: EventEmitter<any> = new EventEmitter<any>();
   public addForm: FormGroup;
 
   constructor(private fb: FormBuilder, private shopService: ShopService) {}

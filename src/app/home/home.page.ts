@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonList } from '@ionic/angular';
+import { Item } from '../interfaces/item.interface';
 import { ShopService } from '../services/shop.service';
 
 @Component({
@@ -16,23 +17,13 @@ export class HomePage implements OnInit {
     this.shopService.getItems();
   }
 
-  public update(id: string): void {}
-
-  public delete(id: string): void {
-    this.shopService.deleteItem(id);
+  public async update(item: Item): Promise<void> {
+    await this.shopService.updateItem(item);
     this.ionList.closeSlidingItems();
   }
 
-  private getPrice() {
-    // this.shopService
-    //   .getItems()
-    //   .pipe(takeUntil(this.unsubscribe$))
-    //   .subscribe((items) => {
-    //     let accum = 0;
-    //     items.forEach((item) => {
-    //       accum += item.quantity * item.price;
-    //     });
-    //     this.total = accum;
-    //   });
+  public async delete(id: string): Promise<void> {
+    await this.shopService.deleteItem(id);
+    this.ionList.closeSlidingItems();
   }
 }

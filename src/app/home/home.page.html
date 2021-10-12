@@ -10,7 +10,7 @@
   <ion-list #list *ngIf="shopService.items$ | async as items">
     <ion-item-sliding *ngFor="let item of items; let i = index">
       <ion-item-options side="start">
-        <ion-item-option color="success" (click)="update(item.id)">
+        <ion-item-option color="success" (click)="update(item)">
           <ion-icon slot="icon-only" name="pencil"></ion-icon>
         </ion-item-option>
       </ion-item-options>
