@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -14,7 +15,10 @@ export class ShopService {
   public items$: Observable<Item[]>;
   public total = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private toastController: ToastController
+  ) {}
 
   public getItems(): void {
     this.items$ = this.http.get<Item[]>(`${url}/shop.json`).pipe(
@@ -36,6 +40,7 @@ export class ShopService {
         .pipe(take(1))
         .subscribe(
           (resp: any) => {
+            this.presentToast('Item agregado');
             this.getItems();
             resolve(true);
           },
@@ -58,6 +63,7 @@ export class ShopService {
         .pipe(take(1))
         .subscribe(
           () => {
+            this.presentToast('Item actualizado');
             this.getItems();
             resolve(true);
           },
@@ -76,6 +82,7 @@ export class ShopService {
         .pipe(take(1))
         .subscribe(
           () => {
+            this.presentToast('Item eliminado');
             this.getItems();
             resolve(true);
           },
@@ -99,5 +106,14 @@ export class ShopService {
       });
     }
     return items;
+  }
+
+  private async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      position: 'top',
+      duration: 1500,
+    });
+    toast.present();
   }
 }
