@@ -3,7 +3,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "app",
+      "name": "Mercado",
       "installMode": "prefetch",
       "resources": {
         "files": [
