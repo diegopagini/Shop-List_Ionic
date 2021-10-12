@@ -5,14 +5,15 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="reload($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  <app-form></app-form>
 
-  <app-form (itemsEmitter)="receiveModifiedItems($event)"></app-form>
-
-  <ion-list #list *ngIf="items$ | async as items">
+  <ion-list #list *ngIf="shopService.items$ | async as items">
     <ion-item-sliding *ngFor="let item of items; let i = index">
+      <ion-item-options side="start">
+        <ion-item-option color="success" (click)="update(item.id)">
+          <ion-icon slot="icon-only" name="pencil"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
       <app-item [item]="item"></app-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="delete(item.id)">
@@ -25,6 +26,8 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-title>Total: {{total | currency: 'EUR'}}</ion-title>
+    <ion-title class="animated fadeIn"
+      >Total: {{shopService.total | currency: 'EUR'}}</ion-title
+    >
   </ion-toolbar>
 </ion-footer>

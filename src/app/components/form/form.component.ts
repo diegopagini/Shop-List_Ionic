@@ -19,12 +19,8 @@ export class FormComponent implements OnInit {
 
   public async addProduct() {
     if (this.addForm.valid) {
-      await this.shopService.addItem(this.addForm.value).subscribe();
-      await this.shopService.getItems().subscribe();
-      const items$ = await this.shopService.getItems();
+      await this.shopService.addItem(this.addForm.value);
       this.initializeForm();
-
-      this.itemsEmitter.emit(items$);
     }
   }
 
