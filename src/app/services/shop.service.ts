@@ -105,6 +105,8 @@ export class ShopService {
         items.push(item);
       });
     }
+    // Sort ascending by string
+    items.sort((a, b) => ('' + a.name).localeCompare(b.name));
     return items;
   }
 
