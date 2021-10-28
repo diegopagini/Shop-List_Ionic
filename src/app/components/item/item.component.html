@@ -1,5 +1,9 @@
 <ion-item lines="none animated fadeIn">
-  <ion-checkbox slot="start" [(ngModel)]="item.checked"></ion-checkbox>
+  <ion-checkbox
+    (click)="onClick(item)"
+    slot="start"
+    [(ngModel)]="item.checked"
+  ></ion-checkbox>
   <ion-label class="item ion-text-wrap">
     <p class="item-data">{{ item.quantity }}</p>
     <h2 class="item-data">{{ item.name }}</h2>

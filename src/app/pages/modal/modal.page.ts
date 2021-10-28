@@ -14,7 +14,7 @@ export class ModalPage implements OnInit {
   @Input() quantity: number;
   @Input() id: string;
   @Input() checked: boolean;
-  public itemToModify: Item = {};
+  itemToModify: Item = {};
 
   constructor(
     private shopService: ShopService,
@@ -31,7 +31,7 @@ export class ModalPage implements OnInit {
     };
   }
 
-  public async updateItem(): Promise<void> {
+  async updateItem(): Promise<void> {
     await this.shopService.updateItem(this.itemToModify);
     this.popOverController.dismiss();
   }

@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonList, PopoverController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Item } from '../../interfaces/item.interface';
 import { ShopService } from '../../services/shop.service';
 import { ModalPage } from '../modal/modal.page';
@@ -21,7 +23,7 @@ export class HomePage implements OnInit {
     this.shopService.getItems();
   }
 
-  public async presentModal(item: Item): Promise<void> {
+  async presentModal(item: Item): Promise<void> {
     const popover = await this.popoverController.create({
       component: ModalPage,
       translucent: true,
@@ -37,8 +39,20 @@ export class HomePage implements OnInit {
     return await popover.present();
   }
 
-  public async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.shopService.deleteItem(id);
     this.ionList.closeSlidingItems();
+  }
+
+  restart() {
+    this.shopService.items$.subscribe((items: Item[]) => {
+      items.forEach((item: Item) => {
+        const uncheckedItem = {
+          ...item,
+          checked: false,
+        };
+        this.shopService.toggleCheck(uncheckedItem);
+      });
+    });
   }
 }

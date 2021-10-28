@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./spinner.component.scss'],
 })
 export class SpinnerComponent implements OnInit {
-  public loading = true;
+  loading = true;
 
   ngOnInit() {
     setTimeout(() => {

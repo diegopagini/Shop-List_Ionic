@@ -75,6 +75,26 @@ export class ShopService {
     });
   }
 
+  public toggleCheck(item: Item): Promise<boolean> {
+    const temporaryItem = JSON.parse(JSON.stringify(item));
+    return new Promise((resolve, reject) => {
+      this.http
+        .put(`${url}/shop/${item.id}.json`, temporaryItem)
+        .pipe(take(1))
+        .subscribe(
+          () => {
+            this.presentToast('Item actualizado');
+            this.getItems();
+            resolve(true);
+          },
+          (err) => {
+            console.log(err);
+            resolve(false);
+          }
+        );
+    });
+  }
+
   public deleteItem(id: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.http

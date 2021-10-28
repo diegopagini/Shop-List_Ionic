@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Lista de Mercado</ion-title>
+    <div class="header">
+      <ion-title>Lista de Mercado</ion-title>
+      <ion-title (click)="restart()" class="restart"
+        ><ion-icon name="refresh-circle-outline"></ion-icon
+      ></ion-title>
+    </div>
   </ion-toolbar>
 </ion-header>
 

@@ -8,7 +8,7 @@ import { ShopService } from 'src/app/services/shop.service';
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
-  public addForm: FormGroup;
+  addForm: FormGroup;
 
   constructor(private fb: FormBuilder, private shopService: ShopService) {}
 
@@ -16,7 +16,7 @@ export class FormComponent implements OnInit {
     this.initializeForm();
   }
 
-  public async addProduct() {
+  async addProduct() {
     if (this.addForm.valid) {
       await this.shopService.addItem(this.addForm.value);
       this.initializeForm();
