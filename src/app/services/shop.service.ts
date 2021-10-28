@@ -83,7 +83,6 @@ export class ShopService {
         .pipe(take(1))
         .subscribe(
           () => {
-            this.presentToast('Item actualizado');
             this.getItems();
             resolve(true);
           },
