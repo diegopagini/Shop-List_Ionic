@@ -83,7 +83,6 @@ export class ShopService {
         .pipe(take(1))
         .subscribe(
           () => {
-            this.getItems();
             resolve(true);
           },
           (err) => {
