@@ -1,13 +1,9 @@
 .header {
   align-items: center;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 
   .restart {
-    bottom: 0;
     font-size: 1.8rem;
-    position: absolute;
-    top: 0.5rem;
-    right: 0;
   }
 }

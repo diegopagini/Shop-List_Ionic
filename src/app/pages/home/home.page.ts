@@ -44,6 +44,10 @@ export class HomePage implements OnInit {
     this.ionList.closeSlidingItems();
   }
 
+  toggle() {
+    console.log('toggle');
+  }
+
   restart() {
     this.shopService.items$.subscribe((items: Item[]) => {
       items.forEach((item: Item) => {
