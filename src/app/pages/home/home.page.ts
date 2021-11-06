@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonList, PopoverController } from '@ionic/angular';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { Item } from '../../interfaces/item.interface';
 import { ShopService } from '../../services/shop.service';
 import { ModalPage } from '../modal/modal.page';
@@ -13,6 +11,7 @@ import { ModalPage } from '../modal/modal.page';
 })
 export class HomePage implements OnInit {
   @ViewChild('list') ionList: IonList;
+  darkMode = false;
 
   constructor(
     public shopService: ShopService,
@@ -45,7 +44,11 @@ export class HomePage implements OnInit {
   }
 
   toggle() {
-    console.log('toggle');
+    this.darkMode = !this.darkMode;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    this.darkMode
+      ? document.body.setAttribute('color-theme', 'dark')
+      : document.body.setAttribute('color-theme', 'light');
   }
 
   restart() {

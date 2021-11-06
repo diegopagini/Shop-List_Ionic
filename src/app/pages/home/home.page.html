@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <div class="header">
-      <ion-title><ion-toggle (ionChange)="toggle()"></ion-toggle></ion-title>
-      <ion-title>Lista de Mercado</ion-title>
-      <ion-title (click)="restart()" class="restart"
-        ><ion-icon name="refresh-circle-outline"></ion-icon
-      ></ion-title>
+      <div><ion-toggle (ionChange)="toggle()"></ion-toggle></div>
+      <div>Lista de Mercado</div>
+      <div (click)="restart()" class="restart">
+        <ion-icon name="refresh-circle-outline"></ion-icon>
+      </div>
     </div>
   </ion-toolbar>
 </ion-header>
