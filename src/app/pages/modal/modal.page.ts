@@ -21,7 +21,7 @@ export class ModalPage implements OnInit {
     private popOverController: PopoverController
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.itemToModify = {
       name: this.name,
       price: this.price,
@@ -31,8 +31,8 @@ export class ModalPage implements OnInit {
     };
   }
 
-  async updateItem(): Promise<void> {
-    await this.shopService.updateItem(this.itemToModify);
+  updateItem(): void {
+    this.shopService.updateItem(this.itemToModify).subscribe();
     this.popOverController.dismiss();
   }
 }

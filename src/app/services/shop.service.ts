@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, shareReplay, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Item } from '../interfaces/item.interface';
 
@@ -12,15 +12,16 @@ const url: string = environment.firebaseUrl;
   providedIn: 'root',
 })
 export class ShopService {
-  public items$: Observable<Item[]>;
-  public total = 0;
+  items$: Observable<Item[]>;
+  total = 0;
 
   constructor(
     private http: HttpClient,
     private toastController: ToastController
   ) {}
 
-  public getItems(): void {
+  // Get all items
+  getItems(): void {
     this.items$ = this.http.get<Item[]>(`${url}/shop.json`).pipe(
       map(this.createArray),
       tap((items) => {
@@ -29,89 +30,72 @@ export class ShopService {
           accum += item.quantity * item.price;
         });
         this.total = accum;
+      }),
+      catchError((err) => {
+        this.presentToast('Error getting items');
+        console.log('Error:', err);
+        return throwError(err);
       })
     );
   }
 
-  public addItem(item: Item): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.http
-        .post(`${url}/shop.json`, item)
-        .pipe(take(1))
-        .subscribe(
-          (resp: any) => {
-            this.presentToast('Item agregado');
-            this.getItems();
-            resolve(true);
-          },
-          (err) => {
-            console.log(err);
-            resolve(false);
-          }
-        );
-    });
+  // Add a new item
+  addItem(item: Item): Observable<Item> {
+    return this.http.post(`${url}/shop.json`, item).pipe(
+      tap(() => {
+        this.presentToast('Item agregado');
+        this.getItems();
+      }),
+      catchError((err) => {
+        console.log(err);
+        return throwError(err);
+      })
+    );
   }
 
-  public updateItem(item: Item): Promise<boolean> {
+  // Modifique an item
+  updateItem(item: Item): Observable<Item> {
     const temporaryItem = {
       ...item,
     };
 
-    return new Promise((resolve, reject) => {
-      this.http
-        .put(`${url}/shop/${item.id}.json`, temporaryItem)
-        .pipe(take(1))
-        .subscribe(
-          () => {
-            this.presentToast('Item actualizado');
-            this.getItems();
-            resolve(true);
-          },
-          (err) => {
-            console.log(err);
-            resolve(false);
-          }
-        );
-    });
+    return this.http.put(`${url}/shop/${item.id}.json`, temporaryItem).pipe(
+      take(1),
+      tap(() => {
+        this.presentToast('Item actualizado');
+        this.getItems();
+      }),
+      catchError((err) => {
+        console.log(err);
+        return throwError(err);
+      })
+    );
   }
 
-  public toggleCheck(item: Item): Promise<boolean> {
+  // Toggle the checked property of an item
+  toggleCheck(item: Item): Observable<Item> {
     const temporaryItem = JSON.parse(JSON.stringify(item));
-    return new Promise((resolve, reject) => {
-      this.http
-        .put(`${url}/shop/${item.id}.json`, temporaryItem)
-        .pipe(take(1))
-        .subscribe(
-          () => {
-            resolve(true);
-          },
-          (err) => {
-            console.log(err);
-            resolve(false);
-          }
-        );
-    });
+    return this.http
+      .put(`${url}/shop/${item.id}.json`, temporaryItem)
+      .pipe(take(1));
   }
 
-  public deleteItem(id: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.http
-        .delete(`${url}/shop/${id}.json`)
-        .pipe(take(1))
-        .subscribe(
-          () => {
-            this.presentToast('Item eliminado');
-            this.getItems();
-            resolve(true);
-          },
-          (err) => {
-            console.log(err);
-            resolve(false);
-          }
-        );
-    });
+  // Delete an item
+  deleteItem(id: string): Observable<Item> {
+    return this.http.delete(`${url}/shop/${id}.json`).pipe(
+      take(1),
+      tap(() => {
+        this.presentToast('Item eliminado');
+        this.getItems();
+      }),
+      catchError((err) => {
+        console.log(err);
+        return throwError(err);
+      })
+    );
   }
 
+  // Metohd to create an array from the object
   private createArray(shopObject): Item[] {
     const items: Item[] = [];
     if (shopObject === null) {
@@ -128,7 +112,8 @@ export class ShopService {
     return items;
   }
 
-  private async presentToast(message: string) {
+  // Method to show a toast
+  private async presentToast(message: string): Promise<void> {
     const toast = await this.toastController.create({
       message,
       position: 'top',

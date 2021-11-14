@@ -12,13 +12,13 @@ export class FormComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private shopService: ShopService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initializeForm();
   }
 
-  async addProduct() {
+  addProduct(): void {
     if (this.addForm.valid) {
-      await this.shopService.addItem(this.addForm.value);
+      this.shopService.addItem(this.addForm.value).subscribe();
       this.initializeForm();
     }
   }

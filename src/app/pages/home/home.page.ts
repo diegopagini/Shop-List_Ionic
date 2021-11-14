@@ -38,12 +38,12 @@ export class HomePage implements OnInit {
     return await popover.present();
   }
 
-  async delete(id: string): Promise<void> {
-    await this.shopService.deleteItem(id);
+  delete(id: string): void {
+    this.shopService.deleteItem(id).subscribe();
     this.ionList.closeSlidingItems();
   }
 
-  toggle() {
+  toggle(): void {
     this.darkMode = !this.darkMode;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.darkMode
@@ -51,7 +51,7 @@ export class HomePage implements OnInit {
       : document.body.setAttribute('color-theme', 'light');
   }
 
-  restart() {
+  restart(): void {
     this.shopService.items$.subscribe((items: Item[]) => {
       items.forEach((item: Item) => {
         const uncheckedItem = {

@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class SpinnerComponent implements OnInit {
   loading = true;
 
-  ngOnInit() {
+  ngOnInit(): void {
     setTimeout(() => {
       this.loading = false;
     }, 10000);

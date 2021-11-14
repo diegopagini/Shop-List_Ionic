@@ -12,7 +12,7 @@ export class ItemComponent {
 
   constructor(private shopService: ShopService) {}
 
-  onClick(item: Item) {
+  onClick(item: Item): void {
     const checked = {
       ...item,
       checked: !item.checked,
