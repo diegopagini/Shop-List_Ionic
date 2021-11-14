@@ -13,8 +13,8 @@
 <ion-content>
   <app-form></app-form>
 
-  <ng-container *ngIf="shopService.items$ | async as items">
-    <ion-list #list *ngIf="items.length >   0; else loading">
+  <ng-container *ngIf="shopService.items$ | async as items; else loading">
+    <ion-list #list>
       <ion-item-sliding *ngFor="let item of items; let i = index">
         <ion-item-options side="start">
           <ion-item-option color="success" (click)="presentModal(item)">
@@ -23,7 +23,7 @@
         </ion-item-options>
         <app-item [item]="item"></app-item>
         <ion-item-options side="end">
-          <ion-item-option color="danger" (click)="delete(item.id)">
+          <ion-item-option color="danger" (click)="delete(item)">
             <ion-icon slot="icon-only" name="trash"></ion-icon>
           </ion-item-option>
         </ion-item-options>

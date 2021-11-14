@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map, shareReplay, take, tap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, delay, finalize, map, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Item } from '../interfaces/item.interface';
 
@@ -13,6 +13,7 @@ const url: string = environment.firebaseUrl;
 })
 export class ShopService {
   items$: Observable<Item[]>;
+  loading$: Observable<boolean>;
   total = 0;
 
   constructor(
@@ -22,6 +23,8 @@ export class ShopService {
 
   // Get all items
   getItems(): void {
+    this.loading$ = of(true);
+
     this.items$ = this.http.get<Item[]>(`${url}/shop.json`).pipe(
       map(this.createArray),
       tap((items) => {
@@ -31,6 +34,7 @@ export class ShopService {
         });
         this.total = accum;
       }),
+      finalize(() => (this.loading$ = of(false))),
       catchError((err) => {
         this.presentToast('Error getting items');
         console.log('Error:', err);
@@ -43,7 +47,7 @@ export class ShopService {
   addItem(item: Item): Observable<Item> {
     return this.http.post(`${url}/shop.json`, item).pipe(
       tap(() => {
-        this.presentToast('Item agregado');
+        this.presentToast(`${item.name} agregado`);
         this.getItems();
       }),
       catchError((err) => {
@@ -62,7 +66,7 @@ export class ShopService {
     return this.http.put(`${url}/shop/${item.id}.json`, temporaryItem).pipe(
       take(1),
       tap(() => {
-        this.presentToast('Item actualizado');
+        this.presentToast(`${item.name} actualizado`);
         this.getItems();
       }),
       catchError((err) => {
@@ -81,11 +85,11 @@ export class ShopService {
   }
 
   // Delete an item
-  deleteItem(id: string): Observable<Item> {
-    return this.http.delete(`${url}/shop/${id}.json`).pipe(
+  deleteItem(item: Item): Observable<Item> {
+    return this.http.delete(`${url}/shop/${item.id}.json`).pipe(
       take(1),
       tap(() => {
-        this.presentToast('Item eliminado');
+        this.presentToast(`${item.name} eliminado`);
         this.getItems();
       }),
       catchError((err) => {

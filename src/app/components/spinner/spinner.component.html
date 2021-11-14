@@ -1,4 +1,4 @@
-<ng-container *ngIf="loading">
+<ng-container *ngIf="shopService.loading$ | async">
   <section class="loading">
     <div class="sk-chase">
       <div class="sk-chase-dot"></div>

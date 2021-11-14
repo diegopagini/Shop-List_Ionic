@@ -38,8 +38,8 @@ export class HomePage implements OnInit {
     return await popover.present();
   }
 
-  delete(id: string): void {
-    this.shopService.deleteItem(id).subscribe();
+  delete(item: Item): void {
+    this.shopService.deleteItem(item).subscribe();
     this.ionList.closeSlidingItems();
   }
 

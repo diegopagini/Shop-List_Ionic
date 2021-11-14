@@ -1,16 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { ShopService } from 'src/app/services/shop.service';
 
 @Component({
   selector: 'app-spinner',
   templateUrl: './spinner.component.html',
   styleUrls: ['./spinner.component.scss'],
 })
-export class SpinnerComponent implements OnInit {
-  loading = true;
-
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.loading = false;
-    }, 10000);
-  }
+export class SpinnerComponent {
+  constructor(public shopService: ShopService) {}
 }
