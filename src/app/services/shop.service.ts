@@ -64,7 +64,6 @@ export class ShopService {
     };
 
     return this.http.put(`${url}/shop/${item.id}.json`, temporaryItem).pipe(
-      take(1),
       tap(() => {
         this.presentToast(`${item.name} actualizado`);
         this.getItems();
@@ -79,9 +78,7 @@ export class ShopService {
   // Toggle the checked property of an item
   toggleCheck(item: Item): Observable<Item> {
     const temporaryItem = JSON.parse(JSON.stringify(item));
-    return this.http
-      .put(`${url}/shop/${item.id}.json`, temporaryItem)
-      .pipe(take(1));
+    return this.http.put(`${url}/shop/${item.id}.json`, temporaryItem);
   }
 
   // Delete an item

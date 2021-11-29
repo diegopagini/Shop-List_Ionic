@@ -17,6 +17,6 @@ export class ItemComponent {
       ...item,
       checked: !item.checked,
     };
-    this.shopService.toggleCheck(checked);
+    this.shopService.toggleCheck(checked).subscribe();
   }
 }
