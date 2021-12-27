@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
-import { Item } from 'src/app/interfaces/item.interface';
+import { Item } from 'src/app/models/item.interface';
 import { ShopService } from 'src/app/services/shop.service';
 
 @Component({

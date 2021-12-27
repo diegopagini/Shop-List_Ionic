@@ -1,6 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { IonList, PopoverController } from '@ionic/angular';
-import { Item } from '../../interfaces/item.interface';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Item } from '../../models/item.interface';
 import { ShopService } from '../../services/shop.service';
 import { ModalPage } from '../modal/modal.page';
 
@@ -11,15 +20,37 @@ import { ModalPage } from '../modal/modal.page';
 })
 export class HomePage implements OnInit {
   @ViewChild('list') ionList: IonList;
+  @ViewChild('input', { read: ElementRef }) myInput: ElementRef;
   darkMode = false;
+  loading$: Observable<boolean>;
+  items$: Observable<Item[]>;
+  total$: Observable<number>;
+  search: string;
 
   constructor(
     public shopService: ShopService,
-    private popoverController: PopoverController
+    private popoverController: PopoverController,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit(): void {
-    this.shopService.getItems();
+    this.items$ = this.shopService.getItems();
+    this.loading$ = this.shopService.getLoading();
+    this.total$ = this.shopService.getTotal();
+  }
+
+  onSearch(search: string) {
+    if (search) {
+      this.items$ = this.items$.pipe(
+        map((items: Item[]) =>
+          items.filter((el: Item) =>
+            el.name.toLowerCase().includes(search.toLowerCase())
+          )
+        )
+      );
+    } else {
+      this.items$ = this.shopService.getItems();
+    }
   }
 
   async presentModal(item: Item): Promise<void> {
@@ -47,19 +78,11 @@ export class HomePage implements OnInit {
     this.darkMode = !this.darkMode;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.darkMode
-      ? document.body.setAttribute('color-theme', 'dark')
-      : document.body.setAttribute('color-theme', 'light');
+      ? this.document.body.setAttribute('color-theme', 'dark')
+      : this.document.body.setAttribute('color-theme', 'light');
   }
 
   restart(): void {
-    this.shopService.items$.subscribe((items: Item[]) => {
-      items.forEach((item: Item) => {
-        const uncheckedItem = {
-          ...item,
-          checked: false,
-        };
-        this.shopService.toggleCheck(uncheckedItem);
-      });
-    });
+    this.shopService.restartList().subscribe();
   }
 }

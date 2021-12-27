@@ -1,4 +1,18 @@
-<form [formGroup]="addForm" (ngSubmit)="addProduct()" class="animated fadeIn">
+<ion-button
+  *ngIf="!showForm"
+  class="add"
+  expand="block"
+  (click)="showForm = !showForm"
+>
+  <ion-icon name="add-outline"></ion-icon
+></ion-button>
+
+<form
+  *ngIf="showForm"
+  [formGroup]="addForm"
+  (ngSubmit)="addProduct()"
+  class="animated fadeIn"
+>
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Agregar un producto</ion-card-subtitle>
