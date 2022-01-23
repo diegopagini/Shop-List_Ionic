@@ -25,6 +25,7 @@ export class HomePage implements OnInit {
   loading$: Observable<boolean>;
   items$: Observable<Item[]>;
   total$: Observable<number>;
+  current$: Observable<number>;
   search: string;
 
   constructor(
@@ -37,6 +38,8 @@ export class HomePage implements OnInit {
     this.items$ = this.shopService.getItems();
     this.loading$ = this.shopService.getLoading();
     this.total$ = this.shopService.getTotal();
+    this.current$ = this.shopService.getCurrentTotal();
+    this.current$.subscribe(console.log);
   }
 
   onSearch(search: string) {

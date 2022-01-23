@@ -10,13 +10,11 @@ import { Item } from '../models/item.interface';
 })
 export class ShopService {
   private totalSubjet = new BehaviorSubject<number>(0);
-  private total$: Observable<number> = this.totalSubjet.asObservable();
+  private currentTotal = new BehaviorSubject<number>(0);
   private subject = new BehaviorSubject<Item[]>([]);
   private items$ = this.subject.asObservable();
   private loadingSubjet = new BehaviorSubject<boolean>(false);
-  private loading$ = this.loadingSubjet.asObservable();
   private searchSubject = new BehaviorSubject<string>('');
-  private search$ = this.searchSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -51,12 +49,17 @@ export class ShopService {
 
   // Get loading
   getLoading(): Observable<boolean> {
-    return this.loading$;
+    return this.loadingSubjet.asObservable();
   }
 
   // Get Total
   getTotal(): Observable<number> {
-    return this.total$;
+    return this.totalSubjet.asObservable();
+  }
+
+  // Get Current Total
+  getCurrentTotal(): Observable<number> {
+    return this.currentTotal.asObservable();
   }
 
   // Add a new item
@@ -77,7 +80,6 @@ export class ShopService {
 
     return this.http.put(`shop/${item.id}.json`, temporaryItem).pipe(
       tap(() => this.presentToast(`${item.name} actualizado`)),
-
       finalize(() => this.getItemsFromFirebase())
     );
   }
@@ -119,15 +121,13 @@ export class ShopService {
   }
 
   searchItem(search: string): void {
-    console.log(search);
-
     if (search) {
       this.searchSubject.next(search);
     }
   }
 
   getSearch(): Observable<string> {
-    return this.search$;
+    return this.searchSubject.asObservable();
   }
 
   // Method to show a toast
