@@ -38,8 +38,6 @@ export class HomePage implements OnInit {
     this.items$ = this.shopService.getItems();
     this.loading$ = this.shopService.getLoading();
     this.total$ = this.shopService.getTotal();
-    this.current$ = this.shopService.getCurrentTotal();
-    this.current$.subscribe(console.log);
   }
 
   onSearch(search: string) {

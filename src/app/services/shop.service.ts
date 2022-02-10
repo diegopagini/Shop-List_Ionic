@@ -9,12 +9,9 @@ import { Item } from '../models/item.interface';
   providedIn: 'root',
 })
 export class ShopService {
-  private totalSubjet = new BehaviorSubject<number>(0);
-  private currentTotal = new BehaviorSubject<number>(0);
-  private subject = new BehaviorSubject<Item[]>([]);
-  private items$ = this.subject.asObservable();
-  private loadingSubjet = new BehaviorSubject<boolean>(false);
-  private searchSubject = new BehaviorSubject<string>('');
+  private total = new BehaviorSubject<number>(0);
+  private items = new BehaviorSubject<Item[]>([]);
+  private loading = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -24,8 +21,7 @@ export class ShopService {
   }
 
   getItemsFromFirebase(): void {
-    this.loadingSubjet.next(true);
-
+    this.loading.next(true);
     this.http
       .get<Item[]>(`shop.json`)
       .pipe(
@@ -35,31 +31,26 @@ export class ShopService {
           items.forEach((item) => {
             accum += item.quantity * item.price;
           });
-          this.totalSubjet.next(accum);
+          this.total.next(accum);
         }),
-        finalize(() => this.loadingSubjet.next(false))
+        finalize(() => this.loading.next(false))
       )
-      .subscribe((items: Item[]) => this.subject.next(items));
+      .subscribe((items: Item[]) => this.items.next(items));
   }
 
   // Get all items
   getItems(): Observable<Item[]> {
-    return this.items$;
+    return this.items.asObservable();
   }
 
   // Get loading
   getLoading(): Observable<boolean> {
-    return this.loadingSubjet.asObservable();
+    return this.loading.asObservable();
   }
 
   // Get Total
   getTotal(): Observable<number> {
-    return this.totalSubjet.asObservable();
-  }
-
-  // Get Current Total
-  getCurrentTotal(): Observable<number> {
-    return this.currentTotal.asObservable();
+    return this.total.asObservable();
   }
 
   // Add a new item
@@ -72,7 +63,7 @@ export class ShopService {
     );
   }
 
-  // Modifique an item
+  // Modifique a item
   updateItem(item: Item): Observable<Item> {
     const temporaryItem = {
       ...item,
@@ -86,7 +77,7 @@ export class ShopService {
 
   // Restart checked items
   restartList(): Observable<void> {
-    return this.items$.pipe(
+    return this.items.asObservable().pipe(
       take(1),
       switchMap((items: Item[]) =>
         items.map((item: Item) => {
@@ -101,16 +92,16 @@ export class ShopService {
     );
   }
 
-  // Toggle the checked property of an item
+  // Toggle the checked property of a item
   toggleCheck(item: Item): Observable<Item> {
     const temporaryItem = JSON.parse(JSON.stringify(item));
     return this.http.put(`shop/${item.id}.json`, temporaryItem).pipe(
-      tap(() => this.loadingSubjet.next(true)),
-      finalize(() => this.loadingSubjet.next(false))
+      tap(() => this.loading.next(true)),
+      finalize(() => this.loading.next(false))
     );
   }
 
-  // Delete an item
+  // Delete a item
   deleteItem(item: Item): Observable<Item> {
     return this.http.delete(`shop/${item.id}.json`).pipe(
       finalize(() => {
@@ -118,16 +109,6 @@ export class ShopService {
         this.getItemsFromFirebase();
       })
     );
-  }
-
-  searchItem(search: string): void {
-    if (search) {
-      this.searchSubject.next(search);
-    }
-  }
-
-  getSearch(): Observable<string> {
-    return this.searchSubject.asObservable();
   }
 
   // Method to show a toast

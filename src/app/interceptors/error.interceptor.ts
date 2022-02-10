@@ -20,7 +20,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           // backend error
           errorMessage = `Server-side error: ${error.status} ${error.message}`;
         }
-        console.log(errorMessage);
         return throwError(errorMessage);
       })
     );
