@@ -11,7 +11,6 @@ import { Item } from '../models/item.interface';
 export class ShopService {
   private total = new BehaviorSubject<number>(0);
   private items = new BehaviorSubject<Item[]>([]);
-  private loading = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -21,7 +20,6 @@ export class ShopService {
   }
 
   getItemsFromFirebase(): void {
-    this.loading.next(true);
     this.http
       .get<Item[]>(`shop.json`)
       .pipe(
@@ -32,8 +30,7 @@ export class ShopService {
             accum += item.quantity * item.price;
           });
           this.total.next(accum);
-        }),
-        finalize(() => this.loading.next(false))
+        })
       )
       .subscribe((items: Item[]) => this.items.next(items));
   }
@@ -41,11 +38,6 @@ export class ShopService {
   // Get all items
   getItems(): Observable<Item[]> {
     return this.items.asObservable();
-  }
-
-  // Get loading
-  getLoading(): Observable<boolean> {
-    return this.loading.asObservable();
   }
 
   // Get Total
@@ -95,10 +87,7 @@ export class ShopService {
   // Toggle the checked property of a item
   toggleCheck(item: Item): Observable<Item> {
     const temporaryItem = JSON.parse(JSON.stringify(item));
-    return this.http.put(`shop/${item.id}.json`, temporaryItem).pipe(
-      tap(() => this.loading.next(true)),
-      finalize(() => this.loading.next(false))
-    );
+    return this.http.put(`shop/${item.id}.json`, temporaryItem);
   }
 
   // Delete a item

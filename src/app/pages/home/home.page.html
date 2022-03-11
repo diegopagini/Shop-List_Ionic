@@ -14,44 +14,45 @@
   <app-form></app-form>
 
   <!-- eslint-disable-next-line @angular-eslint/template/no-negated-async -->
-  <ng-container *ngIf="!(loading$ | async)">
-    <ng-container *ngIf="items$ | async as items">
-      <ion-list #list>
-        <ion-item>
-          <ion-label>Buscar Item:</ion-label>
-          <ion-input
-            #input
-            [(ngModel)]="search"
-            (ngModelChange)="onSearch($event)"
-            type="text"
-          ></ion-input>
-        </ion-item>
-        <ion-item-sliding *ngFor="let item of items; let i = index">
-          <ion-item-options side="start">
-            <ion-item-option color="success" (click)="presentModal(item)">
-              <ion-icon slot="icon-only" name="pencil"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-          <app-item [item]="item"></app-item>
-          <ion-item-options side="end">
-            <ion-item-option color="danger" (click)="delete(item)">
-              <ion-icon slot="icon-only" name="trash"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-    </ng-container>
+  <ng-container *ngIf="items$ | async as items; else isLoading">
+    <ion-list #list>
+      <ion-item>
+        <ion-label>Buscar Item:</ion-label>
+        <ion-input
+          #input
+          [(ngModel)]="search"
+          (ngModelChange)="onSearch($event)"
+          type="text"
+        ></ion-input>
+      </ion-item>
+      <ion-item-sliding *ngFor="let item of items; let i = index">
+        <ion-item-options side="start">
+          <ion-item-option color="success" (click)="presentModal(item)">
+            <ion-icon slot="icon-only" name="pencil"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+        <app-item [item]="item" (itemChange)="onItemChange($event)"></app-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="delete(item)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
   </ng-container>
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar>
-    <ion-title class="animated fadeIn"
+  <ion-toolbar class="footer__toolbar">
+    <ion-title slot="start" class="animated fadeIn"
       >Total: {{total$ | async | currency: 'EUR'}}</ion-title
     >
+    <ion-title color="primary" slot="end" class="animated fadeIn">
+      Gastado: {{currentToltal$ | async | currency: 'EUR'}}
+    </ion-title>
   </ion-toolbar>
 </ion-footer>
 
-<ng-container *ngIf="loading$ | async">
+<ng-template #isLoading>
   <app-spinner></app-spinner>
-</ng-container>
+</ng-template>

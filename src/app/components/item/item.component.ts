@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Item } from 'src/app/models/item.interface';
 import { ShopService } from 'src/app/services/shop.service';
 
@@ -9,6 +9,7 @@ import { ShopService } from 'src/app/services/shop.service';
 })
 export class ItemComponent {
   @Input() item: Item;
+  @Output() itemChange = new EventEmitter<Item>();
 
   constructor(private shopService: ShopService) {}
 
@@ -17,6 +18,7 @@ export class ItemComponent {
       ...item,
       checked: !item.checked,
     };
+    this.itemChange.emit(checked);
     this.shopService.toggleCheck(checked).subscribe();
   }
 }

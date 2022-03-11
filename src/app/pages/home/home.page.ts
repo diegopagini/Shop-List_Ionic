@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { IonList, PopoverController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Item } from '../../models/item.interface';
 import { ShopService } from '../../services/shop.service';
@@ -22,9 +22,9 @@ export class HomePage implements OnInit {
   @ViewChild('list') ionList: IonList;
   @ViewChild('input', { read: ElementRef }) myInput: ElementRef;
   darkMode = false;
-  loading$: Observable<boolean>;
   items$: Observable<Item[]>;
   total$: Observable<number>;
+  currentToltal$: Observable<number> = of(0);
   current$: Observable<number>;
   search: string;
 
@@ -36,11 +36,11 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.items$ = this.shopService.getItems();
-    this.loading$ = this.shopService.getLoading();
     this.total$ = this.shopService.getTotal();
+    this.getCurrentTotal();
   }
 
-  onSearch(search: string) {
+  onSearch(search: string): void {
     if (search) {
       this.items$ = this.items$.pipe(
         map((items: Item[]) =>
@@ -52,6 +52,10 @@ export class HomePage implements OnInit {
     } else {
       this.items$ = this.shopService.getItems();
     }
+  }
+
+  onItemChange(product: Item): void {
+    this.getCurrentTotal(product);
   }
 
   async presentModal(item: Item): Promise<void> {
@@ -85,5 +89,19 @@ export class HomePage implements OnInit {
 
   restart(): void {
     this.shopService.restartList().subscribe();
+  }
+
+  private getCurrentTotal(product: Item = { checked: false }): void {
+    this.currentToltal$ = this.shopService.getItems().pipe(
+      map((items: Item[]) => {
+        let arr: Item[] = [];
+        if (product.checked) {
+          arr = [...items.filter((el) => el.checked), product];
+        } else {
+          arr = items.filter((el) => el.checked);
+        }
+        return arr.map((el) => el.price).reduce((prev, curr) => prev + curr, 0);
+      })
+    );
   }
 }
