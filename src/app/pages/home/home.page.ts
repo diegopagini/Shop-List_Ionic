@@ -100,7 +100,9 @@ export class HomePage implements OnInit {
         } else {
           arr = items.filter((el) => el.checked);
         }
-        return arr.map((el) => el.price).reduce((prev, curr) => prev + curr, 0);
+        return arr
+          .map((el) => el.price * el.quantity)
+          .reduce((prev, curr) => prev + curr, 0);
       })
     );
   }
