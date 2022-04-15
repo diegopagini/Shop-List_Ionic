@@ -4,6 +4,7 @@ import { ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, map, switchMap, take, tap } from 'rxjs/operators';
 import { Item } from '../models/item.interface';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,14 +15,15 @@ export class ShopService {
 
   constructor(
     private http: HttpClient,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private authService: AuthService
   ) {
     this.getItemsFromFirebase();
   }
 
   getItemsFromFirebase(): void {
     this.http
-      .get<Item[]>(`shop.json`)
+      .get<Item[]>(`${this.authService.getUserId()}.json`)
       .pipe(
         map(this.createArray),
         tap((items) => {
@@ -60,7 +62,7 @@ export class ShopService {
    * @returns Observable<Item>
    */
   addItem(item: Item): Observable<Item> {
-    return this.http.post(`/shop.json`, item).pipe(
+    return this.http.post(`/${this.authService.getUserId()}.json`, item).pipe(
       finalize(() => {
         this.presentToast(`${item.name} agregado`);
         this.getItemsFromFirebase();
@@ -79,10 +81,12 @@ export class ShopService {
       ...item,
     };
 
-    return this.http.put(`shop/${item.id}.json`, temporaryItem).pipe(
-      tap(() => this.presentToast(`${item.name} actualizado`)),
-      finalize(() => this.getItemsFromFirebase())
-    );
+    return this.http
+      .put(`${this.authService.getUserId()}/${item.id}.json`, temporaryItem)
+      .pipe(
+        tap(() => this.presentToast(`${item.name} actualizado`)),
+        finalize(() => this.getItemsFromFirebase())
+      );
   }
 
   /**
@@ -96,7 +100,9 @@ export class ShopService {
       switchMap((items: Item[]) =>
         items.map((item: Item) => {
           const temp: Item = { ...item, checked: false };
-          this.http.put(`shop/${item.id}.json`, temp).subscribe();
+          this.http
+            .put(`${this.authService.getUserId()}/${item.id}.json`, temp)
+            .subscribe();
         })
       ),
       finalize(() => {
@@ -114,7 +120,10 @@ export class ShopService {
    */
   toggleCheck(item: Item): Observable<Item> {
     const temporaryItem = JSON.parse(JSON.stringify(item));
-    return this.http.put(`shop/${item.id}.json`, temporaryItem);
+    return this.http.put(
+      `${this.authService.getUserId()}/${item.id}.json`,
+      temporaryItem
+    );
   }
 
   /**
@@ -124,12 +133,14 @@ export class ShopService {
    * @returns Observable<Item>
    */
   deleteItem(item: Item): Observable<Item> {
-    return this.http.delete(`shop/${item.id}.json`).pipe(
-      finalize(() => {
-        this.presentToast(`${item.name} eliminado`);
-        this.getItemsFromFirebase();
-      })
-    );
+    return this.http
+      .delete(`${this.authService.getUserId()}/${item.id}.json`)
+      .pipe(
+        finalize(() => {
+          this.presentToast(`${item.name} eliminado`);
+          this.getItemsFromFirebase();
+        })
+      );
   }
 
   /**

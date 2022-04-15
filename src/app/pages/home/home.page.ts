@@ -9,6 +9,7 @@ import {
 import { IonList, PopoverController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
 import { Item } from '../../models/item.interface';
 import { ShopService } from '../../services/shop.service';
 import { ModalPage } from '../modal/modal.page';
@@ -31,6 +32,7 @@ export class HomePage implements OnInit {
   constructor(
     public shopService: ShopService,
     private popoverController: PopoverController,
+    private authService: AuthService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
