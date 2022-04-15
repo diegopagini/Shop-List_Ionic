@@ -12,8 +12,6 @@
 
 <ion-content>
   <app-form></app-form>
-
-  <!-- eslint-disable-next-line @angular-eslint/template/no-negated-async -->
   <ng-container *ngIf="items$ | async as items; else isLoading">
     <ion-list #list>
       <ion-item>

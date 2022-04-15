@@ -35,17 +35,30 @@ export class ShopService {
       .subscribe((items: Item[]) => this.items.next(items));
   }
 
-  // Get all items
+  /**
+   * Method to get all items.
+   *
+   * @returns Observable<Item[]>
+   */
   getItems(): Observable<Item[]> {
     return this.items.asObservable();
   }
 
-  // Get Total
+  /**
+   * Method to get total.
+   *
+   * @returns Observable<number>
+   */
   getTotal(): Observable<number> {
     return this.total.asObservable();
   }
 
-  // Add a new item
+  /**
+   * Metod to add a new item.
+   *
+   * @param item
+   * @returns Observable<Item>
+   */
   addItem(item: Item): Observable<Item> {
     return this.http.post(`/shop.json`, item).pipe(
       finalize(() => {
@@ -55,7 +68,12 @@ export class ShopService {
     );
   }
 
-  // Modifique a item
+  /**
+   * Method to update a item.
+   *
+   * @param item
+   * @returns Observable<Item>
+   */
   updateItem(item: Item): Observable<Item> {
     const temporaryItem = {
       ...item,
@@ -67,7 +85,11 @@ export class ShopService {
     );
   }
 
-  // Restart checked items
+  /**
+   * Method to uncheck all items.
+   *
+   * @returns Observable<void>
+   */
   restartList(): Observable<void> {
     return this.items.asObservable().pipe(
       take(1),
@@ -84,13 +106,23 @@ export class ShopService {
     );
   }
 
-  // Toggle the checked property of a item
+  /**
+   * Method to toggle the checked property of a item.
+   *
+   * @param item
+   * @returns Observable<Item>
+   */
   toggleCheck(item: Item): Observable<Item> {
     const temporaryItem = JSON.parse(JSON.stringify(item));
     return this.http.put(`shop/${item.id}.json`, temporaryItem);
   }
 
-  // Delete a item
+  /**
+   * Method to toggle the delete a item.
+   *
+   * @param item
+   * @returns Observable<Item>
+   */
   deleteItem(item: Item): Observable<Item> {
     return this.http.delete(`shop/${item.id}.json`).pipe(
       finalize(() => {
@@ -100,7 +132,12 @@ export class ShopService {
     );
   }
 
-  // Method to show a toast
+  /**
+   * Method to show a toast.
+   *
+   * @param message
+   * @returns Promise<void>
+   */
   private async presentToast(message: string): Promise<void> {
     const toast = await this.toastController.create({
       message,
@@ -110,7 +147,12 @@ export class ShopService {
     toast.present();
   }
 
-  // Metohd to create an array from the object
+  /**
+   * Metohd to create an array from the object.
+   *
+   * @param shopObject
+   * @returns Item[]
+   */
   private createArray(shopObject): Item[] {
     const items: Item[] = [];
     if (shopObject === null) {
