@@ -18,6 +18,10 @@ export class HttpApiInterceptor implements HttpInterceptor {
       url: `${environment.firebaseUrl}${request.url}`,
     });
 
-    return next.handle(req);
+    if (!request.url.includes('assets/i18n')) {
+      return next.handle(req);
+    } else {
+      return next.handle(request);
+    }
   }
 }

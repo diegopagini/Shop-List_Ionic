@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -10,7 +11,11 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private translateService: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -25,5 +30,9 @@ export class LoginPage implements OnInit {
     } else {
       this.loginForm.markAllAsTouched();
     }
+  }
+
+  onChange(lang): void {
+    this.translateService.use(lang.detail.value);
   }
 }

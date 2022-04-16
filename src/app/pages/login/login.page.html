@@ -1,18 +1,26 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Login</ion-title>
+    <ion-title slot="start">{{"common.login" | translate}}</ion-title>
+    <ion-item lines="none" slot="end" (ionChange)="onChange($event)">
+      <ion-select [placeholder]="'common.lang' | translate">
+        <ion-select-option value="ES">ES</ion-select-option>
+        <ion-select-option value="EN">EN</ion-select-option>
+      </ion-select>
+    </ion-item>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <ion-item>
-      <ion-label position="floating">Email</ion-label>
+      <ion-label position="floating">{{"common.email" |translate}}</ion-label>
       <ion-input type="email" formControlName="email"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
+      <ion-label position="floating"
+        >{{"common.password" |translate}}</ion-label
+      >
       <ion-input type="password" formControlName="password"></ion-input>
     </ion-item>
 
@@ -21,9 +29,11 @@
       type="submit"
       expand="block"
       (keyup.enter)="onSubmit()"
-      >Login</ion-button
+      >{{"common.login" | translate}}</ion-button
     >
 
-    <a class="link" routerLink="/register" href="#">¿No estás registrado?</a>
+    <a class="link" routerLink="/register" href="#"
+      >{{"common.not_registered" | translate}}</a
+    >
   </form>
 </ion-content>
