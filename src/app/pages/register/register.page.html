@@ -18,6 +18,8 @@
 
     <ion-button class="btn" type="submit" expand="block">Register</ion-button>
 
-    <a class="link" routerLink="/login" href="#">¿Ya estás registrado?</a>
+    <a class="link" routerLink="/login" href="#" (keyup.enter)="onSubmit()"
+      >¿Ya estás registrado?</a
+    >
   </form>
 </ion-content>

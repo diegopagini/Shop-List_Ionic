@@ -9,7 +9,6 @@ import {
 import { IonList, PopoverController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthService } from 'src/app/services/auth.service';
 import { Item } from '../../models/item.interface';
 import { ShopService } from '../../services/shop.service';
 import { ModalPage } from '../modal/modal.page';
@@ -23,6 +22,7 @@ export class HomePage implements OnInit {
   @ViewChild('list') ionList: IonList;
   @ViewChild('input', { read: ElementRef }) myInput: ElementRef;
   darkMode = false;
+  products$: Observable<Item[]>;
   items$: Observable<Item[]>;
   total$: Observable<number>;
   currentToltal$: Observable<number> = of(0);
@@ -32,11 +32,11 @@ export class HomePage implements OnInit {
   constructor(
     public shopService: ShopService,
     private popoverController: PopoverController,
-    private authService: AuthService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit(): void {
+    this.products$ = this.shopService.getItemsFromFirebase();
     this.items$ = this.shopService.getItems();
     this.total$ = this.shopService.getTotal();
     this.getCurrentTotal();
@@ -56,8 +56,8 @@ export class HomePage implements OnInit {
     }
   }
 
-  onItemChange(product: Item): void {
-    this.getCurrentTotal(product);
+  onItemChange(): void {
+    this.getCurrentTotal();
   }
 
   async presentModal(item: Item): Promise<void> {
@@ -93,19 +93,14 @@ export class HomePage implements OnInit {
     this.shopService.restartList().subscribe();
   }
 
-  private getCurrentTotal(product: Item = { checked: false }): void {
+  private getCurrentTotal(): void {
     this.currentToltal$ = this.shopService.getItems().pipe(
-      map((items: Item[]) => {
-        let arr: Item[] = [];
-        if (product.checked) {
-          arr = [...items.filter((el) => el.checked), product];
-        } else {
-          arr = items.filter((el) => el.checked);
-        }
-        return arr
+      map((items: Item[]) =>
+        items
+          .filter((el) => el.checked)
           .map((el) => el.price * el.quantity)
-          .reduce((prev, curr) => prev + curr, 0);
-      })
+          .reduce((prev, curr) => prev + curr, 0)
+      )
     );
   }
 }

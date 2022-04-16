@@ -16,7 +16,13 @@
       <ion-input type="password" formControlName="password"></ion-input>
     </ion-item>
 
-    <ion-button class="btn" type="submit" expand="block">Login</ion-button>
+    <ion-button
+      class="btn"
+      type="submit"
+      expand="block"
+      (keyup.enter)="onSubmit()"
+      >Login</ion-button
+    >
 
     <a class="link" routerLink="/register" href="#">¿No estás registrado?</a>
   </form>

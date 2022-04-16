@@ -10,7 +10,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="products$ | async">
   <app-form></app-form>
   <ng-container *ngIf="items$ | async as items; else isLoading">
     <ion-list #list>

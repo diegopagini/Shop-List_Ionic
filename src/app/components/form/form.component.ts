@@ -28,8 +28,8 @@ export class FormComponent implements OnInit {
 
   private initializeForm(): void {
     this.addForm = this.fb.group({
-      name: ['', [Validators.required]],
-      price: ['', [Validators.required]],
+      name: [null, [Validators.required]],
+      price: [null, [Validators.required]],
       quantity: [1, [Validators.required]],
       id: [new Date().getTime().toString()],
       checked: [false],

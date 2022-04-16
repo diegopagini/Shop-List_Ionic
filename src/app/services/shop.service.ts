@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize, map, switchMap, take, tap } from 'rxjs/operators';
+import { finalize, map, take, tap } from 'rxjs/operators';
 import { Item } from '../models/item.interface';
 import { AuthService } from './auth.service';
 
@@ -11,30 +11,22 @@ import { AuthService } from './auth.service';
 })
 export class ShopService {
   private total = new BehaviorSubject<number>(0);
-  private items = new BehaviorSubject<Item[]>([]);
+  private items$ = new BehaviorSubject<Item[]>([]);
 
   constructor(
     private http: HttpClient,
     private toastController: ToastController,
     private authService: AuthService
-  ) {
-    this.getItemsFromFirebase();
-  }
+  ) {}
 
-  getItemsFromFirebase(): void {
-    this.http
-      .get<Item[]>(`${this.authService.getUserId()}.json`)
-      .pipe(
-        map(this.createArray),
-        tap((items) => {
-          let accum = 0;
-          items.forEach((item) => {
-            accum += item.quantity * item.price;
-          });
-          this.total.next(accum);
-        })
-      )
-      .subscribe((items: Item[]) => this.items.next(items));
+  getItemsFromFirebase(): Observable<Item[]> {
+    return this.http.get<Item[]>(`${this.authService.getUserId()}.json`).pipe(
+      map(this.createArray),
+      tap((items) => {
+        this.items$.next(items);
+        this.getCurrentTotal(items);
+      })
+    );
   }
 
   /**
@@ -43,7 +35,18 @@ export class ShopService {
    * @returns Observable<Item[]>
    */
   getItems(): Observable<Item[]> {
-    return this.items.asObservable();
+    return this.items$.asObservable().pipe(
+      map((items: Item[]) =>
+        items.sort((a, b) => ('' + a.name).localeCompare(b.name))
+      ),
+      tap((items: []) => this.getCurrentTotal(items))
+    );
+  }
+
+  getItemsValue(): Item[] {
+    return this.items$.value.sort((a, b) =>
+      ('' + a.name).localeCompare(b.name)
+    );
   }
 
   /**
@@ -60,12 +63,15 @@ export class ShopService {
    *
    * @param item
    * @returns Observable<Item>
+   *
    */
   addItem(item: Item): Observable<Item> {
     return this.http.post(`/${this.authService.getUserId()}.json`, item).pipe(
-      finalize(() => {
+      tap(() => {
         this.presentToast(`${item.name} agregado`);
-        this.getItemsFromFirebase();
+        const products = this.getItemsValue();
+        products.push(item);
+        this.items$.next(products);
       })
     );
   }
@@ -75,17 +81,23 @@ export class ShopService {
    *
    * @param item
    * @returns Observable<Item>
+   *
    */
   updateItem(item: Item): Observable<Item> {
     const temporaryItem = {
       ...item,
     };
+    const products = this.getItemsValue();
+    const index = products.findIndex((el) => el.id === item.id);
+    products[index] = temporaryItem;
+    this.items$.next(products);
 
     return this.http
       .put(`${this.authService.getUserId()}/${item.id}.json`, temporaryItem)
       .pipe(
-        tap(() => this.presentToast(`${item.name} actualizado`)),
-        finalize(() => this.getItemsFromFirebase())
+        tap(() => {
+          this.presentToast(`${item.name} actualizado`);
+        })
       );
   }
 
@@ -93,20 +105,24 @@ export class ShopService {
    * Method to uncheck all items.
    *
    * @returns Observable<void>
+   *
    */
-  restartList(): Observable<void> {
-    return this.items.asObservable().pipe(
+  restartList(): Observable<any> {
+    return this.items$.asObservable().pipe(
       take(1),
-      switchMap((items: Item[]) =>
-        items.map((item: Item) => {
+      tap((items: Item[]) => {
+        const products = items.map((item: Item) => {
           const temp: Item = { ...item, checked: false };
           this.http
             .put(`${this.authService.getUserId()}/${item.id}.json`, temp)
             .subscribe();
-        })
-      ),
+
+          return temp;
+        });
+
+        this.items$.next(products);
+      }),
       finalize(() => {
-        this.getItemsFromFirebase();
         this.presentToast('Lista reinicializada');
       })
     );
@@ -117,9 +133,14 @@ export class ShopService {
    *
    * @param item
    * @returns Observable<Item>
+   *
    */
   toggleCheck(item: Item): Observable<Item> {
     const temporaryItem = JSON.parse(JSON.stringify(item));
+    const products = this.getItemsValue();
+    const index = products.findIndex((el) => el.id === item.id);
+    products[index] = temporaryItem;
+    this.items$.next(products);
     return this.http.put(
       `${this.authService.getUserId()}/${item.id}.json`,
       temporaryItem
@@ -132,13 +153,16 @@ export class ShopService {
    * @param item
    * @returns Observable<Item>
    */
+
   deleteItem(item: Item): Observable<Item> {
     return this.http
       .delete(`${this.authService.getUserId()}/${item.id}.json`)
       .pipe(
-        finalize(() => {
+        tap(() => {
+          let products = this.getItemsValue();
+          products = products.filter((product) => product.id !== item.id);
+          this.items$.next(products);
           this.presentToast(`${item.name} eliminado`);
-          this.getItemsFromFirebase();
         })
       );
   }
@@ -178,5 +202,13 @@ export class ShopService {
     // Sort ascending by string
     items.sort((a, b) => ('' + a.name).localeCompare(b.name));
     return items;
+  }
+
+  private getCurrentTotal(items: Item[]): void {
+    let accum = 0;
+    items.forEach((item) => {
+      accum += item.quantity * item.price;
+    });
+    this.total.next(accum);
   }
 }
