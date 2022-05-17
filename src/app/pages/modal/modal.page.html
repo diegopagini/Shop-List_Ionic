@@ -1,29 +1,33 @@
 <ion-content>
   <ion-card class="animated fadeIn">
     <ion-card-header>
-      <ion-card-subtitle>Modificar producto</ion-card-subtitle>
+      <ion-card-subtitle>{{"product.update" | translate}}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
         <ion-item>
-          <ion-label>Producto</ion-label>
+          <ion-label>{{"product" | translate}}</ion-label>
           <ion-input [(ngModel)]="itemToModify.name" type="text"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label>Precio</ion-label>
+          <ion-label>{{"product.price" | translate}}</ion-label>
           <ion-input [(ngModel)]="itemToModify.price" type="number"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label>Cantidad</ion-label>
+          <ion-label>{{"product.quantity" | translate}}</ion-label>
           <ion-input
             [(ngModel)]="itemToModify.quantity"
             type="number"
           ></ion-input>
         </ion-item>
+        <ion-item>
+          <ion-label>{{"product.place" | translate}}</ion-label>
+          <ion-input [(ngModel)]="itemToModify.place" type="text"></ion-input>
+        </ion-item>
       </ion-list>
       <div class="center">
         <ion-button (click)="updateItem()" type="submit" expand="block">
-          <ion-label>Modificar</ion-label>
+          <ion-label>{{"update" | translate}}</ion-label>
         </ion-button>
       </div>
     </ion-card-content>

@@ -14,6 +14,7 @@ export class ModalPage implements OnInit {
   @Input() quantity: number;
   @Input() id: string;
   @Input() checked: boolean;
+  @Input() place: string;
   itemToModify: Item = {};
 
   constructor(
@@ -28,6 +29,7 @@ export class ModalPage implements OnInit {
       quantity: this.quantity,
       id: this.id,
       checked: this.checked,
+      place: this.place,
     };
   }
 

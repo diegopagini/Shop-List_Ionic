@@ -4,4 +4,5 @@ export interface Item {
   quantity?: number;
   checked?: boolean;
   id?: string;
+  place?: string;
 }

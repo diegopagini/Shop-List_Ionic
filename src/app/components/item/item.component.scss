@@ -8,10 +8,22 @@
     font-size: 1.2rem;
     margin: 0;
     padding: 0 0.5rem;
+    text-align: center;
     text-transform: capitalize;
+  }
+
+  &-wrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .price {
     min-width: 5.3125rem;
+  }
+
+  .place {
+    font-size: 0.875rem;
   }
 }

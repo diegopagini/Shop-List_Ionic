@@ -1,9 +1,21 @@
 {
+  "common.add": "Add",
   "common.already_registered": "Already registered?",
   "common.email": "Email",
   "common.lang": "Language",
+  "common.list": "Shop List",
   "common.login": "Login",
   "common.not_registered": "Not registered?",
   "common.password": "Password",
-  "common.register": "Create Account"
+  "common.register": "Create Account",
+  "common.search": "Search item",
+  "common.spended": "Spended",
+  "common.total": "Total",
+  "common.update": "Update",
+  "product": "Product",
+  "product.add": "Add Product",
+  "product.place": "Place",
+  "product.price": "Price",
+  "product.quantity": "Quantity",
+  "product.update": "Update product"
 }

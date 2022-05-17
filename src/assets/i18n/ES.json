@@ -1,9 +1,21 @@
 {
+  "common.add": "Agregar",
   "common.already_registered": "¿Ya estás registrado?",
   "common.email": "Correo electrónico",
   "common.lang": "Idioma",
+  "common.list": "Lista de Mercado",
   "common.login": "Iniciar sesion",
   "common.not_registered": "¿No estás registrado?",
   "common.password": "Contraseña",
-  "common.register": "Crear cuenta"
+  "common.register": "Crear cuenta",
+  "common.search": "Buscar item",
+  "common.spended": "Gastado",
+  "common.total": "Total",
+  "common.update": "Actualizar",
+  "product": "Producto",
+  "product.add": "Agregar producto",
+  "product.place": "Lugar",
+  "product.price": "Precio",
+  "product.quantity": "Cantidad",
+  "product.update": "Actualizar producto"
 }

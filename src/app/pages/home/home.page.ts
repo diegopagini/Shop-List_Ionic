@@ -1,14 +1,9 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { IonList, PopoverController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { Item } from '../../models/item.interface';
 import { ShopService } from '../../services/shop.service';
 import { ModalPage } from '../modal/modal.page';
@@ -70,6 +65,7 @@ export class HomePage implements OnInit {
         quantity: item.quantity,
         id: item.id,
         checked: item.checked,
+        place: item.place,
       },
     });
     this.ionList.closeSlidingItems();

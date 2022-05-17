@@ -6,7 +6,10 @@
   ></ion-checkbox>
   <ion-label class="item ion-text-wrap">
     <p class="item-data">{{ item.quantity }}</p>
-    <h2 class="item-data">{{ item.name }}</h2>
+    <div class="item-wrapper">
+      <h2 class="item-data">{{ item.name }}</h2>
+      <small *ngIf="item.place" class="item-data place">{{ item.place }}</small>
+    </div>
     <h3 class="item-data price">{{ item.price | currency: "EUR" }}</h3>
   </ion-label>
 </ion-item>

@@ -2,7 +2,7 @@
   <ion-toolbar>
     <div class="header">
       <div><ion-toggle (ionChange)="toggle()"></ion-toggle></div>
-      <div>Lista de Mercado</div>
+      <div>{{"common.list" | translate}}</div>
       <div (click)="restart()" class="restart">
         <ion-icon name="refresh-circle-outline"></ion-icon>
       </div>
@@ -15,7 +15,7 @@
   <ng-container *ngIf="items$ | async as items; else isLoading">
     <ion-list #list>
       <ion-item>
-        <ion-label>Buscar Item:</ion-label>
+        <ion-label>{{"common.search" | translate}}:</ion-label>
         <ion-input
           #input
           [(ngModel)]="search"
@@ -29,7 +29,7 @@
             <ion-icon slot="icon-only" name="pencil"></ion-icon>
           </ion-item-option>
         </ion-item-options>
-        <app-item [item]="item" (itemChange)="onItemChange($event)"></app-item>
+        <app-item [item]="item" (itemChange)="onItemChange()"></app-item>
         <ion-item-options side="end">
           <ion-item-option color="danger" (click)="delete(item)">
             <ion-icon slot="icon-only" name="trash"></ion-icon>
@@ -43,10 +43,12 @@
 <ion-footer>
   <ion-toolbar class="footer__toolbar">
     <ion-title slot="start" class="animated fadeIn"
-      >Total: {{total$ | async | currency: 'EUR'}}</ion-title
+      >{{"common.total" | translate}}: {{total$ | async | currency:
+      'EUR'}}</ion-title
     >
     <ion-title color="primary" slot="end" class="animated fadeIn">
-      Gastado: {{currentToltal$ | async | currency: 'EUR'}}
+      {{"common.spended" | translate}}: {{currentToltal$ | async | currency:
+      'EUR'}}
     </ion-title>
   </ion-toolbar>
 </ion-footer>

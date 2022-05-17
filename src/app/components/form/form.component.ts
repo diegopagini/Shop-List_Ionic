@@ -31,6 +31,7 @@ export class FormComponent implements OnInit {
       name: [null, [Validators.required]],
       price: [null, [Validators.required]],
       quantity: [1, [Validators.required]],
+      place: [null],
       id: [new Date().getTime().toString()],
       checked: [false],
     });
