@@ -8,3 +8,16 @@
     font-size: 1.8rem;
   }
 }
+
+.footer__toolbar {
+  div {
+    padding: 0.5rem;
+  }
+
+  ::ng-deep {
+    .toolbar-container {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}

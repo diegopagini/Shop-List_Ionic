@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize, map, take, tap } from 'rxjs/operators';
+import { distinctUntilChanged, finalize, map, take, tap } from 'rxjs/operators';
+
 import { Item } from '../models/item.interface';
 import { AuthService } from './auth.service';
 
@@ -39,6 +40,7 @@ export class ShopService {
       map((items: Item[]) =>
         items.sort((a, b) => ('' + a.name).localeCompare(b.name))
       ),
+      distinctUntilChanged(),
       tap((items: []) => this.getCurrentTotal(items))
     );
   }
@@ -59,7 +61,7 @@ export class ShopService {
   }
 
   /**
-   * Metod to add a new item.
+   * Method to add a new item.
    *
    * @param item
    * @returns Observable<Item>
@@ -67,7 +69,7 @@ export class ShopService {
    */
   addItem(item: Item): Observable<Item> {
     return this.http.post(`/${this.authService.getUserId()}.json`, item).pipe(
-      tap(() => {
+      finalize(() => {
         this.presentToast(`${item.name} agregado`);
         const products = this.getItemsValue();
         products.push(item);
@@ -88,6 +90,7 @@ export class ShopService {
       ...item,
     };
     const products = this.getItemsValue();
+
     const index = products.findIndex((el) => el.id === item.id);
     products[index] = temporaryItem;
     this.items$.next(products);
@@ -95,7 +98,7 @@ export class ShopService {
     return this.http
       .put(`${this.authService.getUserId()}/${item.id}.json`, temporaryItem)
       .pipe(
-        tap(() => {
+        finalize(() => {
           this.presentToast(`${item.name} actualizado`);
         })
       );
@@ -195,6 +198,7 @@ export class ShopService {
     } else {
       Object.keys(shopObject).forEach((key) => {
         const item: Item = shopObject[key];
+
         item.id = key;
         items.push(item);
       });

@@ -42,14 +42,17 @@
 
 <ion-footer>
   <ion-toolbar class="footer__toolbar">
-    <ion-title slot="start" class="animated fadeIn"
-      >{{"common.total" | translate}}: {{total$ | async | currency:
-      'EUR'}}</ion-title
-    >
-    <ion-title color="primary" slot="end" class="animated fadeIn">
-      {{"common.spended" | translate}}: {{currentToltal$ | async | currency:
-      'EUR'}}
-    </ion-title>
+    <div slot="start" class="animated fadeIn">
+      <h4>
+        {{"common.total" | translate}}: {{total$ | async | currency: 'EUR'}}
+      </h4>
+    </div>
+    <div color="primary" slot="end" class="animated fadeIn">
+      <h4>
+        {{"common.spended" | translate}}: {{currentToltal$ | async | currency:
+        'EUR'}}
+      </h4>
+    </div>
   </ion-toolbar>
 </ion-footer>
 

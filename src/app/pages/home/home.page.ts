@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { IonList, PopoverController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { ModalPage } from '../modal/modal.page';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, AfterContentChecked {
   @ViewChild('list') ionList: IonList;
   @ViewChild('input', { read: ElementRef }) myInput: ElementRef;
   darkMode = false;
@@ -27,7 +27,8 @@ export class HomePage implements OnInit {
   constructor(
     public shopService: ShopService,
     private popoverController: PopoverController,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -35,6 +36,10 @@ export class HomePage implements OnInit {
     this.items$ = this.shopService.getItems();
     this.total$ = this.shopService.getTotal();
     this.getCurrentTotal();
+  }
+
+  ngAfterContentChecked(): void {
+    this.cdr.detectChanges();
   }
 
   onSearch(search: string): void {
